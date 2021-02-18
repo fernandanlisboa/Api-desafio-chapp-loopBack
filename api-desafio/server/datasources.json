@@ -1,0 +1,13 @@
+{
+  "db": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "mongodb+srv://maria:0@cluster0.tpocn.mongodb.net/desafio.2?retryWrites=true&w=majority",
+    "database": "desafio.2",
+    "password": "0",
+    "name": "db",
+    "user": "maria",
+    "useNewUrlParser": true,
+    "connector": "mongodb"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "avaliacao",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "hipertensao": {
+      "type": "string"
+    },
+    "pSistolica": {
+      "type": "number"
+    },
+    "pDiastolica": {
+      "type": "number"
+    },
+    "pulso": {
+      "type": "number"
+    },
+    "dataHora": {
+      "type": "date",
+      "required": true
+    },
+    "username": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "colaborador": {
+      "type": "belongsTo",
+      "model": "colaborador",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true,
+        "disableInclude": true
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

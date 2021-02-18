@@ -1,0 +1,74 @@
+{
+  "name": "colaborador",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "username": {
+      "type": "string",
+      "required": true
+    },
+    "dataCadastro": {
+      "type": "date",
+      "required": true
+    },
+    "dataNascimento": {
+      "type": "date",
+      "required": true
+    },
+    "password": {
+      "type": "string",
+      "required": true
+    },
+    "medida": {
+      "type": {
+        "peso": {
+          "type": "number"
+        },
+        "altura": {
+          "type": "number"
+        },
+        "dataHora": {
+          "type": "number"
+        },
+        "imc": {
+          "type": "number"
+        }
+      }
+    },
+    "historicoMedidas": {
+      "type": [
+        {
+          "peso": {
+            "type": "number"
+          },
+          "altura": {
+            "type": "number"
+          },
+          "dataHora": {
+            "type": "number"
+          },
+          "imc": {
+            "type": "number"
+          }
+        }
+      ]
+    }
+  },
+  "validations": [],
+  "relations": {
+    "avaliacoes": {
+      "type": "hasMany",
+      "model": "avaliacao",
+      "foreignKey": "username",
+      "options": {
+        "nestRemoting": true,
+        "disableInclude": true
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
