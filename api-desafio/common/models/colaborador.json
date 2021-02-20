@@ -70,5 +70,8 @@
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {},
+  "mixins": {
+    "Aggregate": true
+  }
 }

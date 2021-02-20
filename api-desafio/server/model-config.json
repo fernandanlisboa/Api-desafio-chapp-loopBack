@@ -10,7 +10,8 @@
       "loopback/common/mixins",
       "loopback/server/mixins",
       "../common/mixins",
-      "./mixins"
+      "./mixins",
+      "../node_modules/@aliatech/loopback-mongo-aggregate-mixin/lib"
     ]
   },
   "User": {
