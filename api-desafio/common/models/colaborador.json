@@ -62,7 +62,7 @@
     "avaliacoes": {
       "type": "hasMany",
       "model": "avaliacao",
-      "foreignKey": "username",
+      "foreignKey": "colaboradorId",
       "options": {
         "nestRemoting": true,
         "disableInclude": true

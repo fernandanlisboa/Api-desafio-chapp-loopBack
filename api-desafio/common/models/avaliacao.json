@@ -21,10 +21,6 @@
     "dataHora": {
       "type": "date",
       "required": true
-    },
-    "username": {
-      "type": "string",
-      "required": true
     }
   },
   "validations": [],
@@ -40,5 +36,8 @@
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {},
+  "mixins": {
+    "Aggregate": true
+  }
 }
