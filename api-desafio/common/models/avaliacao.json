@@ -1,9 +1,12 @@
 {
-  "name": "avaliacao",
+  "name": "Avaliacao",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
+  },
+  "mixins": {
+    "Aggregate": true
   },
   "properties": {
     "hipertensao": {
@@ -25,9 +28,9 @@
   },
   "validations": [],
   "relations": {
-    "colaborador": {
+    "Colaborador": {
       "type": "belongsTo",
-      "model": "colaborador",
+      "model": "Colaborador",
       "foreignKey": "",
       "options": {
         "nestRemoting": true,
@@ -36,8 +39,5 @@
     }
   },
   "acls": [],
-  "methods": {},
-  "mixins": {
-    "Aggregate": true
-  }
+  "methods": {}
 }
