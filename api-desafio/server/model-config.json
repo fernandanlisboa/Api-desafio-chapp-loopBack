@@ -44,7 +44,7 @@
   "Avaliacao": {
     "dataSource": "db",
     "public": true,
-    "role":"admin"
+    "role": "admin"
   },
   "Admin": {
     "dataSource": "db",
