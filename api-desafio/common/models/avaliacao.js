@@ -73,7 +73,7 @@ module.exports = function (Avaliacao) {
       aggregate: [
         {
           $lookup: {
-            from: "colaborador",
+            from: "Colaborador",
             localField: "colaboradorId",
             foreignField: "_id",
             as: "colaborador",
