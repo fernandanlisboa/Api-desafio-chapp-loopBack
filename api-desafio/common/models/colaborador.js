@@ -94,7 +94,10 @@ module.exports = function (Colaborador) {
             type: "date",
           },
           imc: {
-            type: "number",
+            type: {
+              valor: { type: "number" },
+              classificacao: { type: "string" },
+            },
           },
         },
       ],
@@ -110,7 +113,10 @@ module.exports = function (Colaborador) {
         peso: colab.medida.peso,
         altura: colab.medida.altura,
         dataHora: colab.medida.dataHora,
-        imc: colab.medida.imc,
+        imc: {
+          valor: colab.medida.imc.valor,
+          classificacoa: colab.medida.imc.classificacao,
+        },
       });
 
       colab.updateAttributes(
@@ -151,7 +157,10 @@ module.exports = function (Colaborador) {
             type: "date",
           },
           imc: {
-            type: "number",
+            type: {
+              valor: { type: "number" },
+              classificacao: { type: "string" },
+            },
           },
         },
         required: true,
@@ -177,7 +186,10 @@ module.exports = function (Colaborador) {
           type: "date",
         },
         imc: {
-          type: "number",
+          type: {
+            valor: { type: "number" },
+            classificacao: { type: "string" },
+          },
         },
       },
     },
