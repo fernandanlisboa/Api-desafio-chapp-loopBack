@@ -227,4 +227,117 @@ module.exports = function (Colaborador) {
       root: true,
     },
   });
+
+  Colaborador.getNumCadastros = async function () {
+    return Colaborador.aggregate({
+      aggregate: [
+        {
+          $project: {
+            dataCadastro: {
+              $dateFromParts: {
+                year: { $year: "$dataCadastro" },
+                month: { $month: "$dataCadastro" },
+                day: { $dayOfMonth: "$dataCadastro" },
+                hour: 0,
+              },
+            },
+          },
+        },
+        {
+          $facet: {
+            anual: [
+              {
+                $group: {
+                  _id: { $dateFromParts: { year: { $year: "$dataCadastro" } } },
+                  count: { $sum: 1 },
+                },
+              },
+              { $sort: { _id: -1 } },
+              { $limit: 10 },
+              { $project: { _id: 0, x: { $year: "$_id" }, y: "$count" } },
+            ],
+
+            mensal: [
+              {
+                $group: {
+                  _id: {
+                    $dateFromParts: {
+                      year: { $year: "$dataCadastro" },
+                      month: { $month: "$dataCadastro" },
+                    },
+                  },
+                  count: { $sum: 1 },
+                },
+              },
+              { $sort: { _id: -1 } },
+              { $limit: 12 },
+              {
+                $project: {
+                  _id: 0,
+                  x: {
+                    $concat: [
+                      { $toString: { $month: "$_id" } },
+                      "/",
+                      { $toString: { $year: "$_id" } },
+                    ],
+                  },
+                  y: "$count",
+                },
+              },
+            ],
+
+            diario: [
+              {
+                $group: {
+                  _id: {
+                    $dateFromParts: {
+                      year: { $year: "$dataCadastro" },
+                      month: { $month: "$dataCadastro" },
+                      day: { $dayOfMonth: "$dataCadastro" },
+                    },
+                  },
+                  count: { $sum: 1 },
+                },
+              },
+              { $sort: { _id: -1 } },
+              { $limit: 31 },
+              {
+                $project: {
+                  _id: 0,
+                  x: {
+                    $concat: [
+                      { $toString: { $dayOfMonth: "$_id" } },
+                      "/",
+                      { $toString: { $month: "$_id" } },
+                      "/",
+                      { $toString: { $year: "$_id" } },
+                    ],
+                  },
+                  y: "$count",
+                },
+              },
+            ],
+          },
+        },
+      ],
+    })
+      .then(function (medidas) {
+        return Promise.resolve(medidas);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
+  Colaborador.remoteMethod("getNumCadastros", {
+    description: "Retorna o número de cadastros agrupados por, dia, mês e ano",
+    http: {
+      path: "/num/cadastros",
+      verb: "get",
+    },
+    returns: {
+      type: [{}],
+      root: true,
+    },
+  });
 };
