@@ -12,7 +12,7 @@ module.exports = function (Avaliacao) {
 
   Avaliacao.getUltimaAvaliacao = async function (colaboradorId) {
     return Avaliacao.aggregate({
-      where: { colaboradorId: colaboradorId },
+      where: { ColaboradorId: colaboradorId },
       aggregate: [
         {
           $sort: {
@@ -21,7 +21,7 @@ module.exports = function (Avaliacao) {
         },
         {
           $group: {
-            _id: "$colaboradorId",
+            _id: "$ColaboradorId",
             dataUltima: {
               $max: "$dataHora",
             },
@@ -53,13 +53,13 @@ module.exports = function (Avaliacao) {
     description: "Retorna a última avaliação de um colaborador",
     accepts: [
       {
-        arg: "colaboradorId",
+        arg: "ColaboradorId",
         type: "string",
         required: true,
       },
     ],
     http: {
-      path: "/ultima/colaboradorId",
+      path: "/ultima/ColaboradorId",
       verb: "get",
     },
     returns: {
@@ -74,7 +74,7 @@ module.exports = function (Avaliacao) {
         {
           $lookup: {
             from: "Colaborador",
-            localField: "colaboradorId",
+            localField: "ColaboradorId",
             foreignField: "_id",
             as: "colaborador",
           },
@@ -91,7 +91,7 @@ module.exports = function (Avaliacao) {
         },
         {
           $group: {
-            _id: "$colaboradorId",
+            _id: "$ColaboradorId",
             dataUltima: {
               $max: "$dataHora",
             },
