@@ -194,4 +194,37 @@ module.exports = function (Colaborador) {
       },
     },
   });
+
+  Colaborador.getResumoImc = async function () {
+    return Colaborador.aggregate({
+      aggregate: [
+        { $sortByCount: "$medida.imc.classificacao" },
+        {
+          $project: {
+            _id: 0,
+            x: "$_id",
+            y: "$count",
+          },
+        },
+      ],
+    })
+      .then(function (medidas) {
+        return Promise.resolve(medidas);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
+  Colaborador.remoteMethod("getResumoImc", {
+    description: "Retorna o número de colaboradores por imc",
+    http: {
+      path: "/Medidas/resumo/imc",
+      verb: "get",
+    },
+    returns: {
+      type: [{}],
+      root: true,
+    },
+  });
 };
