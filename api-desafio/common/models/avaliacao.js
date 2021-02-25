@@ -182,8 +182,8 @@ module.exports = function (Avaliacao) {
         },
       ],
     })
-      .then(function (medidas) {
-        return Promise.resolve(medidas);
+      .then(function (res) {
+        return Promise.resolve(res);
       })
       .catch(function (err) {
         console.log(err);
@@ -195,6 +195,108 @@ module.exports = function (Avaliacao) {
       "Retorna o número de colaboradores por classificacao de hipertensao",
     http: {
       path: "/resumo/hipertensao",
+      verb: "get",
+    },
+    returns: {
+      type: [{}],
+      root: true,
+    },
+  });
+
+  Avaliacao.getNumAvaliacoes = async function () {
+    return Avaliacao.aggregate({
+      aggregate: [
+        {
+          $facet: {
+            anual: [
+              {
+                $group: {
+                  _id: { $dateFromParts: { year: { $year: "$dataHora" } } },
+                  count: { $sum: 1 },
+                },
+              },
+              { $sort: { _id: -1 } },
+              { $limit: 10 },
+              { $project: { _id: 0, x: { $year: "$_id" }, y: "$count" } },
+            ],
+
+            mensal: [
+              {
+                $group: {
+                  _id: {
+                    $dateFromParts: {
+                      year: { $year: "$dataHora" },
+                      month: { $month: "$dataHora" },
+                    },
+                  },
+                  count: { $sum: 1 },
+                },
+              },
+              { $sort: { _id: -1 } },
+              { $limit: 12 },
+              {
+                $project: {
+                  _id: 0,
+                  x: {
+                    $concat: [
+                      { $toString: { $month: "$_id" } },
+                      "/",
+                      { $toString: { $year: "$_id" } },
+                    ],
+                  },
+                  y: "$count",
+                },
+              },
+            ],
+
+            diario: [
+              {
+                $group: {
+                  _id: {
+                    $dateFromParts: {
+                      year: { $year: "$dataHora" },
+                      month: { $month: "$dataHora" },
+                      day: { $dayOfMonth: "$dataHora" },
+                    },
+                  },
+                  count: { $sum: 1 },
+                },
+              },
+              { $sort: { _id: -1 } },
+              { $limit: 31 },
+              {
+                $project: {
+                  _id: 0,
+                  x: {
+                    $concat: [
+                      { $toString: { $dayOfMonth: "$_id" } },
+                      "/",
+                      { $toString: { $month: "$_id" } },
+                      "/",
+                      { $toString: { $year: "$_id" } },
+                    ],
+                  },
+                  y: "$count",
+                },
+              },
+            ],
+          },
+        },
+      ],
+    })
+      .then(function (res) {
+        return Promise.resolve(res);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
+  Avaliacao.remoteMethod("getNumAvaliacoes", {
+    description:
+      "Retorna o número de avaliacoes realizadas agrupadas por dia, mês e ano",
+    http: {
+      path: "/num/realizadas",
       verb: "get",
     },
     returns: {
