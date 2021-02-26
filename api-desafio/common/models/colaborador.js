@@ -277,8 +277,11 @@ module.exports = function (Colaborador) {
                   x: {
                     $concat: [
                       { $toString: { $month: "$_id" } },
-                      "/",
+                      "-",
+                      { $toString: { $dayOfMonth: "$_id" } },
+                      "-",
                       { $toString: { $year: "$_id" } },
+                      " GMT",
                     ],
                   },
                   y: "$count",
@@ -306,11 +309,12 @@ module.exports = function (Colaborador) {
                   _id: 0,
                   x: {
                     $concat: [
-                      { $toString: { $dayOfMonth: "$_id" } },
-                      "/",
                       { $toString: { $month: "$_id" } },
-                      "/",
+                      "-",
+                      { $toString: { $dayOfMonth: "$_id" } },
+                      "-",
                       { $toString: { $year: "$_id" } },
+                      " GMT",
                     ],
                   },
                   y: "$count",
