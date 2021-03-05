@@ -6,7 +6,7 @@ module.exports = function (Colaborador) {
 
   Colaborador.getMedidasData = async function (data, id) {
     var dataAux = new Date(data);
-    var dataAux2 = new Date();
+    var dataAux2 = new Date(data);
     dataAux2.setDate(dataAux.getDate() + 1);
 
     return Colaborador.aggregate({
@@ -19,12 +19,18 @@ module.exports = function (Colaborador) {
         },
         {
           $match: {
-            "historicoMedidas.dataHora": {
-              $gte: dataAux,
-            },
-            "historicoMedidas.dataHora": {
-              $lt: dataAux2,
-            },
+            $and: [
+              {
+                "historicoMedidas.dataHora": {
+                  $gte: dataAux,
+                },
+              },
+              {
+                "historicoMedidas.dataHora": {
+                  $lt: dataAux2,
+                },
+              },
+            ],
           },
         },
         {
@@ -386,6 +392,89 @@ module.exports = function (Colaborador) {
     ],
     http: {
       path: "/:id/avaliacao/ultima",
+      verb: "get",
+    },
+    returns: {
+      type: {},
+      root: true,
+    },
+  });
+
+  Colaborador.getAvaliacaoColaboradorData = async function (id, data) {
+    var dataAux = new Date(data);
+    var dataAux2 = new Date(data);
+    dataAux2.setDate(dataAux.getDate() + 1);
+
+    return Colaborador.aggregate({
+      where: { _id: id },
+      aggregate: [
+        {
+          $lookup: {
+            from: "Avaliacao",
+            localField: "_id",
+            foreignField: "ColaboradorId",
+            as: "avaliacoes",
+          },
+        },
+        {
+          $unwind: {
+            path: "$avaliacoes",
+          },
+        },
+        {
+          $match: {
+            $and: [
+              {
+                "avaliacoes.dataHora": {
+                  $gte: dataAux,
+                },
+              },
+              {
+                "avaliacoes.dataHora": {
+                  $lt: dataAux2,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            id: "$avaliacoes._id",
+            hipertensao: "$avaliacoes.hipertensao",
+            pSistolica: "$avaliacoes.pSistolica",
+            pDiastolica: "$avaliacoes.pDiastolica",
+            pulso: "$avaliacoes.pulso",
+            dataHora: "$avaliacoes.dataHora",
+          },
+        },
+      ],
+    })
+      .then(function (avaliacoes) {
+        return Promise.resolve(avaliacoes);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
+  Colaborador.remoteMethod("getAvaliacaoColaboradorData", {
+    description:
+      "Retorna as avaliações de um colaborador em uma data específica",
+    accepts: [
+      {
+        arg: "id",
+        type: "string",
+        required: true,
+      },
+      {
+        arg: "data",
+        type: "string",
+        required: true,
+      },
+    ],
+    http: {
+      path: "/:id/avaliacao/:data",
       verb: "get",
     },
     returns: {
