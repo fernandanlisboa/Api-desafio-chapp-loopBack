@@ -6,67 +6,7 @@ module.exports = function (Avaliacao) {
   //só é necessário aplicar o filtro: {"where":{"dataHora": "2021-02-21T16:34:08.081Z"}})
 
   //insert pegar a data e a classificação no front
-
-  //get ultima avaliação user (ok)
   //get ultima avaliação de cada colaborador (Array) (ok)
-
-  Avaliacao.getUltimaAvaliacao = async function (colaboradorId) {
-    return Avaliacao.aggregate({
-      where: { ColaboradorId: colaboradorId },
-      aggregate: [
-        {
-          $sort: {
-            dataHora: 1,
-          },
-        },
-        {
-          $group: {
-            _id: "$ColaboradorId",
-            dataUltima: {
-              $max: "$dataHora",
-            },
-            pulso: {
-              $last: "$pulso",
-            },
-            pSistolica: {
-              $last: "$pSistolica",
-            },
-            pDiastolica: {
-              $last: "$pDiastolica",
-            },
-            hipertensao: {
-              $last: "$hipertensao",
-            },
-          },
-        },
-      ],
-    })
-      .then(function (avaliacao) {
-        return Promise.resolve(avaliacao);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
-  };
-
-  Avaliacao.remoteMethod("getUltimaAvaliacao", {
-    description: "Retorna a última avaliação de um colaborador",
-    accepts: [
-      {
-        arg: "ColaboradorId",
-        type: "string",
-        required: true,
-      },
-    ],
-    http: {
-      path: "/ultima/ColaboradorId",
-      verb: "get",
-    },
-    returns: {
-      type: Avaliacao,
-      root: true,
-    },
-  });
 
   Avaliacao.getUltimasAvaliacoes = async function () {
     return Avaliacao.aggregate({

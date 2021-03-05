@@ -30,8 +30,12 @@
         },
         "imc": {
           "type": {
-            "valor": { "type": "number" },
-            "classificacao": { "type": "string" }
+            "valor": {
+              "type": "number"
+            },
+            "classificacao": {
+              "type": "string"
+            }
           }
         }
       }
@@ -50,8 +54,12 @@
           },
           "imc": {
             "type": {
-              "valor": { "type": "number" },
-              "classificacao": { "type": "string" }
+              "valor": {
+                "type": "number"
+              },
+              "classificacao": {
+                "type": "string"
+              }
             }
           }
         }

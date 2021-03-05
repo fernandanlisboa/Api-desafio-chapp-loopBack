@@ -4,23 +4,6 @@ module.exports = function (Colaborador) {
   //atualiza medidas (coloca as outras medidas no histórico)
   //get medidas passando a data
 
-  // Colaborador.getMedidaData = async function (data, id) {
-  //   return Colaborador.findById(id)
-  //     .then(function (colab) {
-  //       console.log(id);
-  //       console.log(colab);
-  //       var colabObj = colab.toJSON();
-  //       for (var i = 0; i < colabObj.historicoMedidas.length; i++) {
-  //         if (historicoMedidas[i].dataHora == data) {
-  //           return historicoMedidas[i];
-  //         }
-  //       }
-  //     })
-  //     .catch(function (err) {
-  //       console.log(err);
-  //     });
-  // };
-
   Colaborador.getMedidasData = async function (data, id) {
     var dataAux = new Date(data);
     var dataAux2 = new Date();
@@ -341,6 +324,72 @@ module.exports = function (Colaborador) {
     },
     returns: {
       type: [{}],
+      root: true,
+    },
+  });
+
+  Colaborador.getUltimaAvaliacaoColaborador = async function (id) {
+    return Colaborador.aggregate({
+      where: { _id: id },
+      aggregate: [
+        {
+          $lookup: {
+            from: "Avaliacao",
+            localField: "_id",
+            foreignField: "ColaboradorId",
+            as: "avaliacoes",
+          },
+        },
+        {
+          $unwind: {
+            path: "$avaliacoes",
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            dataUltima: {
+              $max: "$avaliacoes.dataHora",
+            },
+            pulso: {
+              $last: "$avaliacoes.pulso",
+            },
+            pSistolica: {
+              $last: "$avaliacoes.pSistolica",
+            },
+            pDiastolica: {
+              $last: "$avaliacoes.pDiastolica",
+            },
+            hipertensao: {
+              $last: "$avaliacoes.hipertensao",
+            },
+          },
+        },
+      ],
+    })
+      .then(function (avaliacao) {
+        return Promise.resolve(avaliacao);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
+  Colaborador.remoteMethod("getUltimaAvaliacaoColaborador", {
+    description: "Retorna a última avaliação de um colaborador",
+    accepts: [
+      {
+        arg: "id",
+        type: "string",
+        required: true,
+      },
+    ],
+    http: {
+      path: "/:id/avaliacao/ultima",
+      verb: "get",
+    },
+    returns: {
+      type: {},
       root: true,
     },
   });
