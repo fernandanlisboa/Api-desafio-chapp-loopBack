@@ -42,6 +42,11 @@ module.exports = function (Colaborador) {
             imc: "$historicoMedidas.imc",
           },
         },
+        {
+          $sort:{
+            dataHora: -1
+          }
+        }
       ],
     })
       .then(function (medidas) {
@@ -98,15 +103,18 @@ module.exports = function (Colaborador) {
     return Colaborador.findById(id).then(function (colab) {
       var novoHistoricoMedidas = [];
       novoHistoricoMedidas = colab.historicoMedidas;
-      novoHistoricoMedidas.push({
-        peso: colab.medida.peso,
-        altura: colab.medida.altura,
-        dataHora: colab.medida.dataHora,
-        imc: {
-          valor: colab.medida.imc.valor,
-          classificacoa: colab.medida.imc.classificacao,
-        },
-      });
+
+      if(colab.medida !== null){
+        novoHistoricoMedidas.push({
+          peso: colab.medida.peso,
+          altura: colab.medida.altura,
+          dataHora: colab.medida.dataHora,
+          imc: {
+            valor: colab.medida.imc.valor,
+            classificacoa: colab.medida.imc.classificacao,
+          },
+        })
+      }
 
       colab.updateAttributes(
         {
@@ -354,7 +362,7 @@ module.exports = function (Colaborador) {
         {
           $group: {
             _id: "$_id",
-            dataUltima: {
+            dataHora: {
               $max: "$avaliacoes.dataHora",
             },
             pulso: {
@@ -370,7 +378,13 @@ module.exports = function (Colaborador) {
               $last: "$avaliacoes.hipertensao",
             },
           },
+
         },
+        {
+          $sort:{
+            dataHora: -1
+          }
+        }
       ],
     })
       .then(function (avaliacao) {
